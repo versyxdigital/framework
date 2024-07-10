@@ -22,8 +22,8 @@ class RouteServiceProvider implements ServiceProviderInterface
     public function register(Container $container): Container
     {
         $container['router'] = simpleDispatcher(function(RouteCollector $rc) {
-            $this->configureRoutes($rc, __DIR__ . '/../../../routes/web.php', 'web');
-            $this->configureRoutes($rc, __DIR__ . '/../../../routes/api.php', 'api');
+            $this->configureRoutes($rc, __DIR__ . '/../../../../../routes/web.php', 'web');
+            $this->configureRoutes($rc, __DIR__ . '/../../../../../routes/api.php', 'api');
         });
 
         return $container;
