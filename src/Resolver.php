@@ -1,14 +1,11 @@
 <?php
-/*------------------------------------------------------
- | Register classes and inject services                |
- ------------------------------------------------------*/
+
+namespace Versyx;
+
 use Composer\ClassMapGenerator\ClassMapGenerator;
 
 class Resolver
 {
-    /**
-     * 
-     */
     public function map($app, $namespace = '', $directory)
     {
         $map = ClassMapGenerator::createMap($directory);
