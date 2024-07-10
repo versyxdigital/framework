@@ -1,6 +1,7 @@
 {
     "name": "versyx/framework",
     "description": "A small PHP framework",
+    "version": "0.0.1",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -13,7 +14,7 @@
             "email": "crowles.sdx@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "php": "^8.2",
         "psr/container": "^2.0",
