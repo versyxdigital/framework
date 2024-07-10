@@ -3,10 +3,22 @@
 namespace Versyx;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
+use Versyx\Service\Container;
 
+/**
+ * Resolver for dependency injection.
+ */
 class Resolver
 {
-    public static function map($app, $namespace = '', $directory)
+    /**
+     * Map classes in a given directory to the service container.
+     * 
+     * @param Container $app
+     * @param string $namespace
+     * @param string $directory
+     * @return void
+     */
+    public static function map(Container $app, string $namespace, string $directory)
     {
         $map = ClassMapGenerator::createMap($directory);
 
