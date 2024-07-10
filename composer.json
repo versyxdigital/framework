@@ -17,7 +17,7 @@
             "email": "crowles.sdx@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": "^8.2",
         "psr/container": "^2.0",
