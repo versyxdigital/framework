@@ -8,14 +8,18 @@ use Versyx\View\TwigEngine;
 use Versyx\View\ViewEngineInterface;
 
 /**
- * Class ViewServiceProvider
+ * Provides a view service.
  * 
- * Versyx uses twig by default.
+ * This service provider creates an application view service and registers it to
+ * the service container.
+ * 
+ * Versyx uses twig/twig by default, however you are free to switch the implementation
+ * with your own custom ViewServiceProvider.
  */
 class ViewServiceProvider implements ServiceProviderInterface
 {
     /**
-     * Register view service provider.
+     * Register the view service provider.
      *
      * @param Container $container
      * @return Container

@@ -11,6 +11,12 @@ use Versyx\View\Extensions\Twig\SessionExtension;
 use Versyx\View\Extensions\Twig\UrlExtension;
 use Versyx\View\ViewEngineInterface;
 
+/**
+ * Twig view engine implementation.
+ * 
+ * This class sets up an environment with necessary configurations and extensions
+ * required for rendering twig templates.
+ */
 class TwigEngine implements ViewEngineInterface
 {
     /** @var $twig */

@@ -9,12 +9,18 @@ use Versyx\Service\ServiceProviderInterface;
 use function FastRoute\simpleDispatcher;
 
 /**
- * Class RouteServiceProvider
+ * Provides a router service.
+ * 
+ * This service provider creates an application router service and registers it
+ * to the service container.
+ * 
+ * Versyx uses nikic/FastRoute by default, however you are free to switch the
+ * implementation with your own custom RouteServiceProvider.
  */
 class RouteServiceProvider implements ServiceProviderInterface
 {
     /**
-     * Register route service provider.
+     * Register the route service provider.
      *
      * @param Container $container
      * @return Container

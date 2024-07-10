@@ -9,6 +9,9 @@ use Laminas\Diactoros\Response\JsonResponse;
 
 /**
  * Abstract base controller class.
+ * 
+ * Provides basic functionality for controllers, including setting data, rendering
+ * views or fetching data, and returning PSR-7 compliant HTTP responses.
  */
 abstract class Controller
 {

@@ -10,6 +10,12 @@ use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Versyx\Service\Container;
 use Versyx\View\ViewEngineInterface;
 
+/**
+ * Kernel class responsible for request dispatching and handling in the application.
+ *
+ * The kernel handles the request-response cycle. It initializes the application,
+ * handles routing, executes controllers, and emits the final HTTP response.
+ */
 class Kernel
 {
     /**

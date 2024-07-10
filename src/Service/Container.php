@@ -9,6 +9,12 @@ use Versyx\Exception\BlockedServiceException;
 use Versyx\Exception\UnknownIdentifierException;
 use Versyx\Service\ServiceProviderInterface;
 
+/**
+ * Dependency injection container implementation.
+ *
+ * This container allows storing and retrieving services and parameters.
+ * It supports factory services, service providers, and service blocking.
+ */
 class Container implements ArrayAccess
 {
     /** @var array */

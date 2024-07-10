@@ -9,12 +9,18 @@ use Versyx\Service\Container;
 use Versyx\Service\ServiceProviderInterface;
 
 /**
- * Class LogServiceProvider
+ * Provides a logger service.
+ * 
+ * This service provider creates an application logger service that implements
+ * the PSR-3 Logger Interface and registers it to the service container.
+ * 
+ * Versyx uses monolog/monolog by default, however you are free to switch the
+ * implementation with your own custom LogServiceProvider.
  */
 class LogServiceProvider implements ServiceProviderInterface
 {
     /**
-     * Register log service provider.
+     * Register the log service provider.
      *
      * @param Container $container
      * @return Container|string
