@@ -6,7 +6,7 @@ use Composer\ClassMapGenerator\ClassMapGenerator;
 
 class Resolver
 {
-    public function map($app, $namespace = '', $directory)
+    public static function map($app, $namespace = '', $directory)
     {
         $map = ClassMapGenerator::createMap($directory);
 
