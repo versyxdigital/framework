@@ -40,6 +40,6 @@ class LogServiceProvider implements ServiceProviderInterface
      */
     private function logPath(): string
     {
-        return __DIR__ . '/../../../logs/app.log';
+        return __DIR__ . '/../../../../../logs/app.log';
     }
 }
