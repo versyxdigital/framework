@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "Versyx\\": "src/"
-        }
+        },
+        "files": [
+            "src/Helpers.php"
+        ]
     },
     "authors": [
         {
