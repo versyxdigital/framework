@@ -53,7 +53,34 @@ class Kernel
                 [$class, $method] = $handler;
                 
                 $controller = $app[$class];
-                $response = $controller->$method($request, $routeParams);
+
+                $reflectionMethod = new \ReflectionMethod($controller, $method);
+                $params = $reflectionMethod->getParameters();
+                
+                $resolved = [];
+                foreach ($params as $param) {
+                    $type = $param->getType();
+                    if ($type && ! $type->isBuiltin()) {
+                        $class = $type->getName();
+                        $resolved[] = $app[$class];
+                    } elseif ($param->getName() === 'request') {
+                        // Special case for the request object
+                        $resolved[] = $request;
+                    } elseif (isset($routeParams[$param->getName()])) {
+                        // Method param matches a route param
+                        $resolved[] = $routeParams[$param->getName()];
+                    } elseif ($param->allowsNull()) {
+                        // Method Param is nullable, pass null
+                        $resolved[] = null;
+                    } else {
+                        // Method param type hint is build-in and not found in route params
+                        throw new \RuntimeException(
+                            'Cannot resolve parameter '. $param->getName().' for method '.$class.'::'.$method
+                        );
+                    }
+                }
+
+                $response = $controller->$method(...$resolved);
 
                 if (! $response instanceof ResponseInterface) {
                     throw new \RuntimeException(
