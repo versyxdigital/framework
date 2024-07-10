@@ -55,10 +55,10 @@ class Kernel
                 $controller = $app[$class];
 
                 $reflectionMethod = new \ReflectionMethod($controller, $method);
-                $params = $reflectionMethod->getParameters();
+                $methodParams = $reflectionMethod->getParameters();
                 
                 $resolved = [];
-                foreach ($params as $param) {
+                foreach ($methodParams as $param) {
                     $type = $param->getType();
                     if ($type && ! $type->isBuiltin()) {
                         $class = $type->getName();
@@ -84,7 +84,7 @@ class Kernel
 
                 if (! $response instanceof ResponseInterface) {
                     throw new \RuntimeException(
-                        $class. '->'.$method.' must return a valid PSR-7 response'
+                        $class.'::'.$method.' must return a valid PSR-7 response'
                     );
                 }
 
