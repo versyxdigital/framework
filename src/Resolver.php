@@ -20,7 +20,7 @@ class Resolver
         }
 
         foreach ($classes as $class) {
-            $reflector = new ReflectionClass($class);
+            $reflector = new \ReflectionClass($class);
 
             // Check if class can be instantiated (i.e. not abstract)
             if ($reflector->isInstantiable()) {
