@@ -4,9 +4,15 @@ namespace Versyx;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Versyx\Service\Container;
+use Versyx\Request;
 
 /**
  * Resolver for dependency injection.
+ * 
+ * This class maps and resolves dependencies for classes in a given directory,
+ * adding them to the provided service container. It inspects the constructors
+ * of each class to determine their dependencies and ensures that instances
+ * are created with the required dependencies.
  */
 class Resolver
 {
@@ -68,5 +74,29 @@ class Resolver
                 }
             }
         }
+    }
+
+    /**
+     * Get the necessary information from requests for the Request object.
+     * 
+     * Useful if a new instance of the Request object needs to be created.
+     * 
+     * @param Request
+     * @return array
+     */
+    public static function request(Request $request): array
+    {
+        return [
+            'serverParams' => $_SERVER,
+            'uploadedFiles' => $request->getUploadedFiles(),
+            'uri' => $request->getUri(),
+            'method' => $request->getMethod(),
+            'body' => $request->getBody(),
+            'headers' => $request->getHeaders(),
+            'cookieParams' => $request->getCookieParams(),
+            'queryParams' => $request->getQueryParams(),
+            'parsedBody' => $request->getParsedBody(),
+            'protocol' => $request->getProtocolVersion(),
+        ];
     }
 }

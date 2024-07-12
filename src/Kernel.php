@@ -62,9 +62,22 @@ class Kernel
                     $type = $param->getType();
                     if ($type && ! $type->isBuiltin()) {
                         $class = $type->getName();
-                        $resolved[] = $app[$class];
+                        // Resolve dependency from the service container
+                        if (isset($app[$class])) {
+                            $resolved[] = $app[$class];
+                        } elseif($class === Request::class) {
+                            // Handle type-hinted request argument...
+                            // $request is already an instance of Versyx\Request, it isn't bound in the
+                            // service container.
+                            $resolved[] = $request;
+                        } else {
+                            // Dependency does not exist in the service container
+                            throw new \RuntimeException(
+                                'Cannot resolve '.$class.' make sure it is bound in the service container'
+                            );
+                        }
                     } elseif ($param->getName() === 'request') {
-                        // Special case for the request object
+                        // Special case for non-type hinted request argument
                         $resolved[] = $request;
                     } elseif (isset($routeParams[$param->getName()])) {
                         // Method param matches a route param
@@ -73,7 +86,7 @@ class Kernel
                         // Method Param is nullable, pass null
                         $resolved[] = null;
                     } else {
-                        // Method param type hint is build-in and not found in route params
+                        // Method param type hint is built-in and not found in route params
                         throw new \RuntimeException(
                             'Cannot resolve parameter '. $param->getName().' for method '.$class.'::'.$method
                         );
