@@ -19,7 +19,7 @@ use Laminas\Diactoros\ServerRequest;
 class Request extends ServerRequest
 {
     /**
-    * Get a HTTP request object.
+    * Get body, headers and query parameters from request
     * 
     * @param array $options
     * @return array $request
@@ -38,6 +38,9 @@ class Request extends ServerRequest
     /**
      * Get the request body.
      * 
+     * This is a convenience wrapper for the standard PSR-7 compliant
+     * getBody() method.
+     * 
      * @return null|array|object
      */
     public function body(): null|array|object
@@ -47,6 +50,9 @@ class Request extends ServerRequest
 
     /**
      * Get the request headers.
+     * 
+     * This is a convenience wrapper for the standard PSR-7 compliant
+     * getHeaders() method
      * 
      * @return array
      */
@@ -58,6 +64,9 @@ class Request extends ServerRequest
     /**
      * Get a request header specified by header name.
      * 
+     * This is a convenience wrapper for the standard PSR-7 compliant
+     * getHeader() method
+     * 
      * @param string $name
      * @return array
      */
@@ -66,7 +75,14 @@ class Request extends ServerRequest
         return $this->getHeader($name);
     }
 
-    
+    /**
+     * Get request attributes.
+     * 
+     * This is a convenience wrapper for the standard PSR-7 compliant
+     * getAttributes() method
+     * 
+     * @return array
+     */
     public function attributes(): array
     {
         return $this->getAttributes();
@@ -74,6 +90,9 @@ class Request extends ServerRequest
 
     /**
      * Get a an attribute specified by key name or default if it doesn't exist
+     * 
+     * This is a convenience wrapper for the standard PSR-7 compliant
+     * getAttribute() method
      * 
      * @param string $key
      * @param string $default
