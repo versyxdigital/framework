@@ -126,7 +126,7 @@ class HomeController extends Controller
 
 ### Service Locator vs Dependency Injection
 
-Service Locator and Dependency Injection are both design patterns used for managing dependencies and both are supported by Versyx.
+Service locator and dependency injection are both design patterns used for managing dependencies and both are supported by Versyx.
 
 #### Dependency Injection
 
@@ -139,7 +139,7 @@ public function index(ApiClient $client) {
 
 #### Service Locator
 
-Service Locator is a pattern where a "central registry", known as the service locator, is used to retrieve services and dependencies. A service provider provides a global point of access to a service.
+Service locator is a pattern where a "central registry", known as the service locator, is used to retrieve services and dependencies. A service locator provides a global point of access to a service.
 
 Services still need to be registered to the container, however, the way they are retrieved is different. Versyx provides a global `app()` helper function to retrieve services using the service locator pattern.
 
@@ -165,4 +165,4 @@ class HomeController extends Controller
 
 #### Which should you use?
 
-Both patterns have their place in software development, but Dependency Injection is generally preferred due to its advantages in decoupling, testability, and clarity. Service Locator can be useful in scenarios where centralising the management of dependencies is necessary, but it should be used with caution due to its tendency to obscure dependencies and increase coupling. 
+Both patterns have their place in software development, but dependency injection is generally preferred due to its advantages in decoupling, testability, and clarity. Service locator can be useful in scenarios where centralising the management of dependencies is necessary, but it should be used with caution due to its tendency to obscure dependencies and increase coupling. 
