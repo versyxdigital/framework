@@ -7,19 +7,24 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DriverManager;
 use Versyx\Service\Container;
 use Versyx\Service\ServiceProviderInterface;
+use Composer\InstalledVersions;
 
 class DatabaseServiceProvider implements ServiceProviderInterface
 {
     public function register ($container): Container
     {
+        $rootDir = dirname(InstalledVersions::getInstallPath('versyx/framework'));
+
+        $entitiesPath = $rootDir . '/app/Entities';
         $config = ORMSetup::createAttributeMetadataConfiguration(
-            paths: [__DIR__ . '/../../../../../app/Entities'],
+            paths: [$entitiesPath],
             isDevMode: env('APP_DEBUG')
         );
 
+        $sqlitePath = $rootDir . '/database/db.sqlite';
         $connection = DriverManager::getConnection([
-            'driver' => env('DB_DRIVER', 'pdo_sqlite'),
-            'path' => __DIR__ . '/../../../../../db.sqlite'
+            'driver' => env('DB_DRIVER'),
+            'path' => $sqlitePath
         ], $config);
 
         $entityManager = new EntityManager($connection, $config);

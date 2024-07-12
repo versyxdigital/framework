@@ -7,6 +7,7 @@ use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
 use Versyx\Service\Container;
 use Versyx\Service\ServiceProviderInterface;
+use Composer\InstalledVersions;
 
 /**
  * Provides a logger service.
@@ -30,8 +31,10 @@ class LogServiceProvider implements ServiceProviderInterface
         $container[LoggerInterface::class] = new Logger('app');
 
         try {
+            $rootDir = dirname(InstalledVersions::getInstallPath('versyx/framework'));
+            $logPath = $rootDir . '/logs/app.log';
             $container[LoggerInterface::class]
-                ->pushHandler(new StreamHandler($this->logPath(), Logger::DEBUG));
+                ->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
         } catch (\Exception $e) {
             return $e->getMessage();
         }
