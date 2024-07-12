@@ -11,14 +11,18 @@ use Versyx\Request;
  * Resolver for dependency injection.
  * 
  * This class maps and resolves dependencies for classes in a given directory,
- * adding them to the provided service container. It inspects the constructors
- * of each class to determine their dependencies and ensures that instances
- * are created with the required dependencies.
+ * adding them to the provided service container. It also resolves dependencies
+ * type-hinted on route methods for the request-response cycle.
  */
 class Resolver
 {
     /**
      * Map classes in a given directory to the service container.
+     * 
+     * This method takes classes under a given namespace located in a given
+     * directory, inspects their constructors and methods, creates instances
+     * with their necessary arguments and then binds them to the service
+     * container.
      * 
      * @param Container $app
      * @param string $namespace
@@ -78,7 +82,12 @@ class Resolver
     }
 
     /**
-     * Resolve dependencies from route method handlers.
+     * Resolve dependencies type-hinted on route handler methods.
+     * 
+     * This method will resolve dependencies type-hinted on route handler methods
+     * from the service container, note there are special cases included for the
+     * Request object, which isn't bound in the container but instead constructed
+     * from the Kernel.
      * 
      * @param Container $app
      * @param Request $request
