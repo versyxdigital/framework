@@ -3,9 +3,13 @@
 namespace Versyx;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
+use FastRoute\Dispatcher;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Http\Message\ResponseInterface;
 use Versyx\Service\Container;
 use Versyx\Request;
+use Versyx\View\ViewEngineInterface;
 
 /**
  * Resolver for dependency injection.
@@ -29,7 +33,7 @@ class Resolver
      * @param string $directory
      * @return void
      */
-    public static function map(Container $app, string $namespace, string $directory)
+    public static function map (Container $app, string $namespace, string $directory)
     {
         $map = ClassMapGenerator::createMap($directory);
 
@@ -92,9 +96,9 @@ class Resolver
      * @param Container $app
      * @param Request $request
      * @param array $route
-     * @return 
+     * @return ResponseInterface
      */
-    public static function route(Container $app, Request $request, array $route)
+    public static function route (Container $app, Request $request, array $route): ResponseInterface
     {
         // Get the handler from the route i.e. the controller
         $handler = $route[1];
@@ -159,9 +163,43 @@ class Resolver
     }
 
     /**
-     * Get the necessary information from requests for the Request object.
+     * Respond to HTTP requests.
      * 
-     * Useful if a new instance of the Request object needs to be created.
+     * This method responds to HTTP requests, resolving any dependencies
+     * on the request route method handlers before handling the request
+     * and emitting the response.
+     * 
+     * @param Container $app
+     * @param Request $request
+     * @param array $route
+     * @return bool
+     */
+    public static function respond (Container $app, Request $request, array $route): bool
+    {
+        switch ($route[0]) {
+            case Dispatcher::NOT_FOUND:
+                $response = new HtmlResponse(
+                    $app[ViewEngineInterface::class]->render('error/404.twig')
+                );
+                break;
+            case Dispatcher::METHOD_NOT_ALLOWED:
+                $response = new HtmlResponse(
+                    $app[ViewEngineInterface::class]->render('error/500.twig')
+                );
+                break;
+            case Dispatcher::FOUND:
+                $response = Resolver::route($app, $request, $route);
+                break;
+        }
+
+        return (new SapiEmitter())->emit($response);
+    }
+
+    /**
+     * Get necessary information from requests.
+     * 
+     * This method is useful for fetching information from requests required for
+     * new instances of the Request object.
      * 
      * @param Request
      * @return array

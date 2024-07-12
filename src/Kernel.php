@@ -2,13 +2,8 @@
 
 namespace Versyx;
 
-use FastRoute\Dispatcher;
-use Psr\Http\Message\ResponseInterface;
-use Laminas\Diactoros\Response\HtmlResponse;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Versyx\RequestFactory;
 use Versyx\Service\Container;
-use Versyx\View\ViewEngineInterface;
 
 /**
  * Kernel class responsible for request dispatching and handling in the application.
@@ -27,6 +22,7 @@ class Kernel
      */
     public static function dispatch(Container $app): void
     {
+        // Create a new request object from the request
         $request = RequestFactory::fromGlobals(
             $_SERVER,
             $_GET,
@@ -35,27 +31,13 @@ class Kernel
             $_FILES
         );
 
+        // Dispatch the router to handle the request
         $route = $app['router']->dispatch(
             $request->getMethod(),
             $request->getUri()->getPath()
         );
 
-        switch ($route[0]) {
-            case Dispatcher::NOT_FOUND:
-                $response = new HtmlResponse(
-                    $app[ViewEngineInterface::class]->render('error/404.twig')
-                );
-                break;
-            case Dispatcher::METHOD_NOT_ALLOWED:
-                $response = new HtmlResponse(
-                    $app[ViewEngineInterface::class]->render('error/500.twig')
-                );
-                break;
-            case Dispatcher::FOUND:
-                $response = Resolver::route($app, $request, $route);
-                break;
-        }
-
-        (new SapiEmitter())->emit($response);
+        // Respond to the request
+        Resolver::respond($app, $request, $route);
     }
 }
