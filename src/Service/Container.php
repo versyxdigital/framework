@@ -75,32 +75,33 @@ class Container implements ArrayAccess
      * @return mixed
      * @throws UnknownIdentifierException
      */
-    public function offsetGet($id)
+    public function offsetGet(mixed $offset): mixed
     {
-        if (!isset($this->keys[$id])) {
-            throw new UnknownIdentifierException($id);
+        if (!isset($this->keys[$offset])) {
+            throw new UnknownIdentifierException($offset);
         }
 
         if (
-            isset($this->raw[$id])
-            || !is_object($this->values[$id])
-            || isset($this->protected[$this->values[$id]])
-            || !method_exists($this->values[$id], '__invoke')
+            isset($this->raw[$offset])
+            || !is_object($this->values[$offset])
+            || isset($this->protected[$this->values[$offset]])
+            || !method_exists($this->values[$offset], '__invoke')
         ) {
-            return $this->values[$id];
+            return $this->values[$offset];
         }
 
-        if (isset($this->factories[$this->values[$id]])) {
-            return $this->values[$id]($this);
+        if (isset($this->factories[$this->values[$offset]])) {
+            return $this->values[$offset]($this);
         }
 
-        $raw = $this->values[$id];
-        $val = $this->values[$id] = $raw($this);
-        $this->raw[$id] = $raw;
+        $raw = $this->values[$offset];
+        $value = $this->values[$offset] = $raw($this);
 
-        $this->blocked[$id] = true;
+        $this->raw[$offset] = $raw;
 
-        return $val;
+        $this->blocked[$offset] = true;
+
+        return $value;
     }
 
     /**

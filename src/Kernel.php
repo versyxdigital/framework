@@ -2,8 +2,9 @@
 
 namespace Versyx;
 
-use Versyx\RequestFactory;
 use Versyx\Service\Container;
+use Versyx\RequestFactory;
+use Versyx\Resolver;
 
 /**
  * Kernel class responsible for request dispatching and handling in the application.
