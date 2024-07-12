@@ -27,7 +27,8 @@
         "laminas/laminas-diactoros": "^3.3",
         "laminas/laminas-httphandlerrunner": "^2.10",
         "doctrine/orm": "^3.2",
-        "doctrine/dbal": "^4.0"
+        "doctrine/dbal": "^4.0",
+        "symfony/cache": "^7.1"
     },
     "require-dev": {
         "composer/class-map-generator": "^1.0@dev"
