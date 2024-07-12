@@ -57,3 +57,31 @@ if (!function_exists('toArray')) {
         return array_map('toArray', (array) $object);
     }
 }
+
+if (!function_exists('appRootDir')) {
+    function appRootDir() {
+        $currentDir = __DIR__;
+
+        while (true) {
+            if (file_exists($currentDir . '/composer.json') && is_dir($currentDir . '/vendor')) {
+                if (basename(dirname($currentDir)) === 'vendor') {
+                    $currentDir = dirname($currentDir);
+                    continue;
+                }
+                break;
+            }
+
+            $parentDir = dirname($currentDir);
+
+            if ($parentDir === $currentDir) {
+                throw new Exception('Unable to locate the application root');
+            }
+
+            $currentDir = $parentDir;
+        }
+
+        $projectRoot = $currentDir;
+
+        return $projectRoot;
+    }
+}

@@ -61,7 +61,7 @@ class TwigEngine implements ViewEngineInterface
      */
     private function viewPath(): string
     {
-        return env('APP_ROOT') . '/resources/views';
+        return appRootDir() . '/resources/views';
     }
 
     /**
@@ -71,6 +71,6 @@ class TwigEngine implements ViewEngineInterface
      */
     private function cachePath(): string
     {
-        return env('APP_ROOT') . '/public/cache';
+        return appRootDir() . '/public/cache';
     }
 }

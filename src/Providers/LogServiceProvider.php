@@ -31,8 +31,7 @@ class LogServiceProvider implements ServiceProviderInterface
         $container[LoggerInterface::class] = new Logger('app');
 
         try {
-            $rootDir = dirname(InstalledVersions::getInstallPath('versyx/framework'));
-            $logPath = $rootDir . '/logs/app.log';
+            $logPath = appRootDir() . '/logs/app.log';
             $container[LoggerInterface::class]
                 ->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
         } catch (\Exception $e) {
@@ -40,15 +39,5 @@ class LogServiceProvider implements ServiceProviderInterface
         }
 
         return $container;
-    }
-
-    /**
-     * Resolve log path.
-     *
-     * @return string
-     */
-    private function logPath(): string
-    {
-        return __DIR__ . '/../../../../../logs/app.log';
     }
 }

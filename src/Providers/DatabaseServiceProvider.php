@@ -13,7 +13,7 @@ class DatabaseServiceProvider implements ServiceProviderInterface
 {
     public function register ($container): Container
     {
-        $rootDir = dirname(InstalledVersions::getInstallPath('versyx/framework'));
+        $rootDir = appRootDir();
 
         $entitiesPath = $rootDir . '/app/Entities';
         $config = ORMSetup::createAttributeMetadataConfiguration(
