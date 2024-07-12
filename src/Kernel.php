@@ -17,12 +17,12 @@ class Kernel
     /**
      * Dispatch the application request-response cycle.
      * 
-     * This method receives the incoming HTTP request and creates a new server request
-     * object containing additional data, it then dispatches the router to handle the
-     * request and uses the resolver to respond.
+     * This method will receive the incoming HTTP request and create a new server request
+     * object containing additional data, it will then dispatch the router to handle the
+     * request before passing it to the resolver.
      * 
-     * The resolver will automatically resolve and inject any dependencies defined on
-     * route handler methods, before handling the request and returning the response.
+     * The resolver will automatically resolve and inject any dependencies defined on the
+     * route handler method, before handling the request and returning the response.
      *
      * @param Container $app
      * @return void
