@@ -96,27 +96,33 @@ class Resolver
      */
     public static function route(Container $app, Request $request, array $route)
     {
+        // Get the handler from the route i.e. the controller
         $handler = $route[1];
+        // Get route path parameters i.e. /user/{id}
         $routeParams = $route[2];
+        // Get the handler class name and method
         [$class, $method] = $handler;
         
+        // Resolve the route handler from the service container
         $instance = $app[$class];
 
+        // Inspect the route handler method
         $reflectionMethod = new \ReflectionMethod($instance, $method);
+        // Get the route handler parameters
         $methodParams = $reflectionMethod->getParameters();
         
+        // Resolve the route method handler
         $resolved = [];
         foreach ($methodParams as $param) {
             $type = $param->getType();
             if ($type && ! $type->isBuiltin()) {
                 $class = $type->getName();
-                // Resolve dependency from the service container
+                // Resolve route handler method dependency from the service container
                 if (isset($app[$class])) {
                     $resolved[] = $app[$class];
                 } elseif($class === Request::class) {
-                    // Handle type-hinted request argument...
-                    // $request is already an instance of Versyx\Request, it isn't bound in the
-                    // service container.
+                    // Handle type-hinted Request $request argument...it is already an
+                    // instance of Versyx\Request, it isn't bound in the service container
                     $resolved[] = $request;
                 } else {
                     // Dependency does not exist in the service container
@@ -125,7 +131,7 @@ class Resolver
                     );
                 }
             } elseif ($param->getName() === 'request') {
-                // Special case for non-type hinted request argument
+                // Special case for non-type hinted $request on route handler methods
                 $resolved[] = $request;
             } elseif (isset($routeParams[$param->getName()])) {
                 // Method param matches a route param
