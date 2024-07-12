@@ -41,10 +41,11 @@ The service container lies at the heart of Versyx, it is responsible for managin
 
 Service Providers are responsible for registering dependencies or "services" into the service container. What we mean by "registering" is creating a new instance of a service, and then binding that instance to the container using either a string identifer, a fully-qualified class name (FQCN), or an interface.
 
-For example, here is a custom class responsible for making API requests from an application that uses the Versyx framework.
+For example, here is a simple demo custom class responsible for making API requests from an application that is built using the Versyx framework.
 
 ```php
-// Simplified example
+namespace MyApp;
+
 class ApiClient 
 {
     protected array $config = [];
@@ -76,6 +77,7 @@ class ApiClientServiceProvider implements ServiceProviderInterface
              ...
         ];
 
+        // Bind to container using FQCN
         $container[ApiClient::class] = new ApiClient($config);
 
         return $container;
@@ -121,3 +123,46 @@ class HomeController extends Controller
     }
 }
 ```
+
+### Service Locator vs Dependency Injection
+
+Service Locator and Dependency Injection are both design patterns used for managing dependencies and both are supported by Versyx.
+
+#### Dependency Injection
+
+In the example above, we used dependency injection, the example `ApiClient` object was retrieved through the dependent `HomeController`'s `index()` method, the dependency was *injected* into the class method.
+
+```php
+public function index(ApiClient $client) {
+    ...
+```
+
+#### Service Locator
+
+Service Locator is a pattern where a "central registry", known as the service locator, is used to retrieve services and dependencies. A service provider provides a global point of access to a service.
+
+Services still need to be registered to the container, however, the way they are retrieved is different. Versyx provides a global `app()` helper function to retrieve services using the service locator pattern.
+
+Here is the same `HomeController` example, using the service locator pattern.
+
+```php
+namespace MyApp\Controllers;
+
+use Versyx\Controller;
+use MyApp\ApiClient;
+
+class HomeController extends Controller
+{
+    public function index() {
+        $exchangeRates = app(ApiClient::class)->get('currency/gbp/exchange');
+        
+        return $this->view('home', [
+            'exchangeRates' => $exchangeRates
+        ]);
+    }
+}
+```
+
+#### Which should you use?
+
+Both patterns have their place in software development, but Dependency Injection is generally preferred due to its advantages in decoupling, testability, and clarity. Service Locator can be useful in scenarios where centralising the management of dependencies is necessary, but it should be used with caution due to its tendency to obscure dependencies and increase coupling. 
