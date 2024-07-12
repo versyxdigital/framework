@@ -3,6 +3,7 @@
 namespace Versyx;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
+use Psr\Http\Message\ResponseInterface;
 use Versyx\Service\Container;
 use Versyx\Request;
 
@@ -74,6 +75,72 @@ class Resolver
                 }
             }
         }
+    }
+
+    /**
+     * Resolve dependencies from route method handlers.
+     * 
+     * @param Container $app
+     * @param Request $request
+     * @param array $route
+     * @return 
+     */
+    public static function route(Container $app, Request $request, array $route)
+    {
+        $handler = $route[1];
+        $routeParams = $route[2];
+        [$class, $method] = $handler;
+        
+        $instance = $app[$class];
+
+        $reflectionMethod = new \ReflectionMethod($instance, $method);
+        $methodParams = $reflectionMethod->getParameters();
+        
+        $resolved = [];
+        foreach ($methodParams as $param) {
+            $type = $param->getType();
+            if ($type && ! $type->isBuiltin()) {
+                $class = $type->getName();
+                // Resolve dependency from the service container
+                if (isset($app[$class])) {
+                    $resolved[] = $app[$class];
+                } elseif($class === Request::class) {
+                    // Handle type-hinted request argument...
+                    // $request is already an instance of Versyx\Request, it isn't bound in the
+                    // service container.
+                    $resolved[] = $request;
+                } else {
+                    // Dependency does not exist in the service container
+                    throw new \RuntimeException(
+                        'Cannot resolve '.$class.' make sure it is bound in the service container'
+                    );
+                }
+            } elseif ($param->getName() === 'request') {
+                // Special case for non-type hinted request argument
+                $resolved[] = $request;
+            } elseif (isset($routeParams[$param->getName()])) {
+                // Method param matches a route param
+                $resolved[] = $routeParams[$param->getName()];
+            } elseif ($param->allowsNull()) {
+                // Method Param is nullable, pass null
+                $resolved[] = null;
+            } else {
+                // Method param type hint is built-in and not found in route params
+                throw new \RuntimeException(
+                    'Cannot resolve parameter '. $param->getName().' for method '.$class.'::'.$method
+                );
+            }
+        }
+
+        $response = $instance->$method(...$resolved);
+
+        if (! $response instanceof ResponseInterface) {
+            throw new \RuntimeException(
+                $class.'::'.$method.' must return a valid PSR-7 response'
+            );
+        }
+
+        return $response;
     }
 
     /**

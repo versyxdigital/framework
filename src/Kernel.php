@@ -19,7 +19,11 @@ use Versyx\View\ViewEngineInterface;
 class Kernel
 {
     /**
-     * Dispatch
+     * Dispatch the application request-response cycle.
+     *
+     * @param Container $app
+     * @return void
+     * @throws \RuntimeException
      */
     public static function dispatch(Container $app): void
     {
@@ -48,59 +52,7 @@ class Kernel
                 );
                 break;
             case Dispatcher::FOUND:
-                $handler = $route[1];
-                $routeParams = $route[2];
-                [$class, $method] = $handler;
-                
-                $controller = $app[$class];
-
-                $reflectionMethod = new \ReflectionMethod($controller, $method);
-                $methodParams = $reflectionMethod->getParameters();
-                
-                $resolved = [];
-                foreach ($methodParams as $param) {
-                    $type = $param->getType();
-                    if ($type && ! $type->isBuiltin()) {
-                        $class = $type->getName();
-                        // Resolve dependency from the service container
-                        if (isset($app[$class])) {
-                            $resolved[] = $app[$class];
-                        } elseif($class === Request::class) {
-                            // Handle type-hinted request argument...
-                            // $request is already an instance of Versyx\Request, it isn't bound in the
-                            // service container.
-                            $resolved[] = $request;
-                        } else {
-                            // Dependency does not exist in the service container
-                            throw new \RuntimeException(
-                                'Cannot resolve '.$class.' make sure it is bound in the service container'
-                            );
-                        }
-                    } elseif ($param->getName() === 'request') {
-                        // Special case for non-type hinted request argument
-                        $resolved[] = $request;
-                    } elseif (isset($routeParams[$param->getName()])) {
-                        // Method param matches a route param
-                        $resolved[] = $routeParams[$param->getName()];
-                    } elseif ($param->allowsNull()) {
-                        // Method Param is nullable, pass null
-                        $resolved[] = null;
-                    } else {
-                        // Method param type hint is built-in and not found in route params
-                        throw new \RuntimeException(
-                            'Cannot resolve parameter '. $param->getName().' for method '.$class.'::'.$method
-                        );
-                    }
-                }
-
-                $response = $controller->$method(...$resolved);
-
-                if (! $response instanceof ResponseInterface) {
-                    throw new \RuntimeException(
-                        $class.'::'.$method.' must return a valid PSR-7 response'
-                    );
-                }
-
+                $response = Resolver::route($app, $request, $route);
                 break;
         }
 
