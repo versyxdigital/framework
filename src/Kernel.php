@@ -5,8 +5,8 @@ namespace Versyx;
 use FastRoute\Dispatcher;
 use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\Response\HtmlResponse;
-use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Versyx\RequestFactory;
 use Versyx\Service\Container;
 use Versyx\View\ViewEngineInterface;
 
@@ -23,7 +23,7 @@ class Kernel
      */
     public static function dispatch(Container $app): void
     {
-        $request = ServerRequestFactory::fromGlobals(
+        $request = RequestFactory::fromGlobals(
             $_SERVER,
             $_GET,
             $_POST,
