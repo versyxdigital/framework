@@ -85,3 +85,25 @@ if (!function_exists('appRootDir')) {
         return $projectRoot;
     }
 }
+
+if (!function_exists('extractObject')) {
+    function extractObject (&$array, string $column, string $key)
+    {
+        $key = array_search($key, array_column($array, $column), true);
+
+        if (! $key) {
+            return null; // No object with key found
+        }
+
+        // Extract the current object
+        $current = $array[$key];
+
+        // Unset it from the array
+        unset($array[$key]);
+
+        // Reindex the array
+        $array = array_values($array);
+
+        return $current;
+    }
+}
