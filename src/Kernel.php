@@ -3,7 +3,7 @@
 namespace Versyx;
 
 use Versyx\Service\Container;
-use Versyx\RequestFactory;
+use Versyx\Http\RequestFactory;
 use Versyx\Resolver;
 
 /**

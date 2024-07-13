@@ -7,8 +7,9 @@ use FastRoute\Dispatcher;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Http\Message\ResponseInterface;
+use Versyx\Http\Request;
+use Versyx\Http\Response;
 use Versyx\Service\Container;
-use Versyx\Request;
 use Versyx\View\ViewEngineInterface;
 
 /**
@@ -129,10 +130,14 @@ class Resolver
                     // instance of Versyx\Request, it isn't bound in the service container
                     $resolved[] = $request;
                 } else {
-                    // Dependency does not exist in the service container
-                    throw new \RuntimeException(
-                        'Cannot resolve '.$class.' make sure it is bound in the service container'
-                    );
+                    if ($type->getName() === Response::class) {
+                        $resolved[] = new Response();
+                    } else {
+                        // Dependency does not exist in the service container
+                        throw new \RuntimeException(
+                            'Cannot resolve '.$class.' make sure it is bound in the service container'
+                        );
+                    }
                 }
             } elseif ($param->getName() === 'request') {
                 // Special case for non-type hinted $request on route handler methods

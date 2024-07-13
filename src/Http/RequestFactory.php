@@ -1,6 +1,6 @@
 <?php
 
-namespace Versyx;
+namespace Versyx\Http;
 
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\ServerRequestFilter\FilterServerRequestInterface;

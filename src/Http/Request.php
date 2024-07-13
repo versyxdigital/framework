@@ -1,6 +1,6 @@
 <?php
 
-namespace Versyx;
+namespace Versyx\Http;
 
 use Laminas\Diactoros\ServerRequest;
 
