@@ -13,7 +13,7 @@ class Response
      * @param string $uri
      * @param int $status
      */
-    public function redirect(string $uri, int $status)
+    public function redirect(string $uri, int $status = 302)
     {
         return new RedirectResponse($uri, $status);
     }
