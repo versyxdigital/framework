@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\DriverManager;
 use Versyx\Service\Container;
 use Versyx\Service\ServiceProviderInterface;
-use Composer\InstalledVersions;
 
 class DatabaseServiceProvider implements ServiceProviderInterface
 {
@@ -16,9 +15,10 @@ class DatabaseServiceProvider implements ServiceProviderInterface
         $rootDir = appRootDir();
 
         $entitiesPath = $rootDir . '/app/Entities';
+        $isDevMode = env('APP_DEBUG');
         $config = ORMSetup::createAttributeMetadataConfiguration(
             paths: [$entitiesPath],
-            isDevMode: env('APP_DEBUG')
+            isDevMode: $isDevMode
         );
 
         $sqlitePath = $rootDir . '/database/db.sqlite';
