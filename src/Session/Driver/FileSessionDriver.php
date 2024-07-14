@@ -6,17 +6,23 @@ use Versyx\Session\AbstractSession;
 
 class FileSessionDriver extends AbstractSession
 {
-    private $filePath;
+    private $savePath;
 
-    public function __construct(string $filePath)
+    public function __construct(string $savePath)
     {
-        $this->filePath = $filePath;
+        if (!is_dir($savePath) && !mkdir($savePath, 0777, true) && !is_dir($savePath)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $savePath));
+        }
+        $this->savePath = rtrim($savePath, DIRECTORY_SEPARATOR);
     }
 
     protected function load(): array
     {
-        if (file_exists($this->filePath)) {
-            return unserialize(file_get_contents($this->filePath));
+        $sessionId = session_id();
+        $filePath = "$this->savePath/sess_$sessionId";
+
+        if (file_exists($filePath)) {
+            return unserialize(file_get_contents($filePath));
         }
 
         return [];
@@ -24,6 +30,8 @@ class FileSessionDriver extends AbstractSession
 
     protected function persist(array $data): void
     {
-        file_put_contents($this->filePath, serialize($data));
+        $sessionId = session_id();
+        $filePath = "$this->savePath/sess_$sessionId";
+        file_put_contents($filePath, serialize($data));
     }
 }
