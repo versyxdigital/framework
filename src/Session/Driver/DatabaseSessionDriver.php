@@ -3,7 +3,7 @@
 namespace Versyx\Session\Driver;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Versyx\Entities\SessionEntity;
+use Versyx\Entities\Session;
 use Versyx\Session\AbstractSession;
 
 class DatabaseSessionDriver extends AbstractSession
@@ -19,17 +19,17 @@ class DatabaseSessionDriver extends AbstractSession
 
     protected function load(): array
     {
-        $session = $this->entityManager->getRepository(SessionEntity::class)->find($this->sessionId);
+        $session = $this->entityManager->getRepository(Session::class)->find($this->sessionId);
 
         return $session ? unserialize($session->getData()) : [];
     }
 
     protected function persist(array $data): void
     {
-        $session = $this->entityManager->getRepository(SessionEntity::class)->find($this->sessionId);
+        $session = $this->entityManager->getRepository(Session::class)->find($this->sessionId);
 
         if (!$session) {
-            $session = new SessionEntity();
+            $session = new Session();
             $session->setId($this->sessionId);
         }
 
