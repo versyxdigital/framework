@@ -11,12 +11,11 @@ use Twig\Extension\AbstractExtension;
  */
 class AssetExtension extends AbstractExtension
 {
-
     /** @var string $path */
-    private string $path;
+    private $path;
 
     /** @var string $asset */
-    private string $asset;
+    private $asset;
 
     /**
      * Define env accessor function.
