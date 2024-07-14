@@ -28,36 +28,62 @@ class RouteServiceProvider implements ServiceProviderInterface
     public function register(Container $container): Container
     {
         $container['router'] = simpleDispatcher(function(RouteCollector $rc) {
-            $this->configureRoutes($rc, appRootDir() . '/routes/web.php', 'web');
-            $this->configureRoutes($rc, appRootDir() . '/routes/api.php', 'api');
+            $rootDir = appRootDir();
+
+            $webRoutes = require $rootDir . '/routes/web.php';
+            $apiRoutes = require $rootDir . '/routes/api.php';
+
+            $this->configureRoutes($rc, $webRoutes, 'web');
+            $this->configureRoutes($rc, $apiRoutes, 'api');
         });
 
         return $container;
     }
 
     /**
-     * Configure application routes
+     * Configure application routes.
      * 
      * @param RouteCollector $rc
      * @param string $file
      * @param string $type
      * @return void
      */
-    private function configureRoutes(RouteCollector $rc, string $file, string $type): void
+    private function configureRoutes(RouteCollector $rc, array $routes, string $type): void
     {
-        if (! is_file($file)) {
-            throw new \RuntimeException('No '.$type.' routes found, please ensure '.$file.' file exists.');
-        }
+        $this->processRoutes($rc, $routes, $type);
+    }
 
-        $routes = require $file;
-        foreach($routes as $route) {
-            [$method, $path, $handler] = $route;
-            
-            if ($type === 'api') {
-                $path = '/api/'.$path;
+    /**
+     * Recursively iterate through routes arrays to configure path prefixes.
+     * 
+     * @param RouteCollector $rc
+     * @param array $routes
+     * @param string $type
+     * @param string $prefix
+     */
+    private function processRoutes(RouteCollector $rc, array $routes, string $type, string $prefix = ''): void
+    {
+        foreach ($routes as $key => $route) {
+            if (is_string($key)) {
+                $newPrefix = rtrim($prefix . '/' . trim($key, '/'), '/');
+                $this->processRoutes($rc, $route, $type, $newPrefix);
+            } else {
+                [$method, $path, $handler] = $route;
+
+                $fullPath = $prefix === ''
+                    ? $path
+                    : rtrim($prefix . '/' . ltrim($path, '/'), '/');
+
+                if ($fullPath === '') {
+                    $fullPath = '/';
+                }
+                
+                if ($type === 'api') {
+                    $fullPath = '/api' . $fullPath;
+                }
+
+                $rc->addRoute($method, $fullPath, $handler);
             }
-
-            $rc->addRoute($method, $path, $handler);
         }
     }
 }
