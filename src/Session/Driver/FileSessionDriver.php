@@ -4,10 +4,19 @@ namespace Versyx\Session\Driver;
 
 use Versyx\Session\AbstractSession;
 
+/**
+ * File session driver.
+ */
 class FileSessionDriver extends AbstractSession
 {
-    private $savePath;
+    /** @var string */
+    private string $savePath;
 
+    /**
+     * Create a new file session driver instance.
+     * 
+     * @param string $savePath
+     */
     public function __construct(string $savePath)
     {
         if (!is_dir($savePath) && !mkdir($savePath, 0777, true) && !is_dir($savePath)) {
@@ -16,6 +25,11 @@ class FileSessionDriver extends AbstractSession
         $this->savePath = rtrim($savePath, DIRECTORY_SEPARATOR);
     }
 
+    /**
+     * Load file session driver.
+     * 
+     * @return array
+     */
     protected function load(): array
     {
         $sessionId = session_id();
@@ -28,6 +42,12 @@ class FileSessionDriver extends AbstractSession
         return [];
     }
 
+    /**
+     * Persist data to the session.
+     * 
+     * @param array $data
+     * @return void
+     */
     protected function persist(array $data): void
     {
         $sessionId = session_id();

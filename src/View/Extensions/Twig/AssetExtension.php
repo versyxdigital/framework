@@ -13,10 +13,10 @@ class AssetExtension extends AbstractExtension
 {
 
     /** @var string $path */
-    private $path;
+    private string $path;
 
     /** @var string $asset */
-    private $asset;
+    private string $asset;
 
     /**
      * Define env accessor function.

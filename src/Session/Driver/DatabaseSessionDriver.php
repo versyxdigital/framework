@@ -7,17 +7,34 @@ use Doctrine\ORM\EntityManagerInterface;
 use Versyx\Entities\Session;
 use Versyx\Session\AbstractSession;
 
+/**
+ * Database session driver.
+ */
 class DatabaseSessionDriver extends AbstractSession
 {
-    private $entityManager;
-    private $sessionId;
+    /** @var EntityManagerInterface */
+    private EntityManagerInterface $entityManager;
 
+    /** @var string */
+    private string $sessionId;
+
+    /**
+     * Create a new database session driver instance.
+     * 
+     * @param EntityManagerInterface $entityManager
+     * @param string $sessionId
+     */
     public function __construct(EntityManagerInterface $entityManager, string $sessionId)
     {
         $this->entityManager = $entityManager;
         $this->sessionId = $sessionId;
     }
 
+    /**
+     * Load the driver.
+     * 
+     * @return array
+     */
     protected function load(): array
     {
         $session = [];
@@ -34,6 +51,12 @@ class DatabaseSessionDriver extends AbstractSession
         return $session ? unserialize($session->getData()) : [];
     }
 
+    /**
+     * Persist data to the session
+     * 
+     * @param array $data
+     * @return void
+     */
     protected function persist(array $data): void
     {
         $session = $this->entityManager->getRepository(Session::class)->find($this->sessionId);
