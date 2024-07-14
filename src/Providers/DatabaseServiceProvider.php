@@ -21,7 +21,7 @@ class DatabaseServiceProvider implements ServiceProviderInterface
         $isDevMode = env('APP_DEBUG', true);
         
         $config = ORMSetup::createAttributeMetadataConfiguration(
-            paths: [$entitiesPaths],
+            paths: $entitiesPaths,
             isDevMode: $isDevMode
         );
 
