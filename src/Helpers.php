@@ -11,7 +11,7 @@ if (!function_exists('env')) {
      */
     function env(string $key, string|null $default = null)
     {
-        $value = getenv($key);
+        $value = $_ENV[$key];
 
         if (! $value) {
             return $default;

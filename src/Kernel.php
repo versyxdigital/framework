@@ -39,11 +39,16 @@ class Kernel
             $_FILES
         );
 
+        // Handle request method including from forms
+        $method = $request->getMethod();
+        $post = $request->getParsedBody();
+        if ($method === 'POST' && isset($post['_method'])) {
+            $method = strtoupper($post['_method']);
+        }
+
         // Dispatch the router to handle the request
-        $route = $app['router']->dispatch(
-            $request->getMethod(),
-            $request->getUri()->getPath()
-        );
+        $route = $app['router']
+            ->dispatch($method, $request->getUri()->getPath());
 
         // Respond to the request
         Resolver::respond($app, $request, $route);
