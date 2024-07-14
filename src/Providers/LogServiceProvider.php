@@ -31,7 +31,7 @@ class LogServiceProvider implements ServiceProviderInterface
         $container[LoggerInterface::class] = new Logger('app');
 
         try {
-            $logPath = appRootDir() . '/logs/app.log';
+            $logPath = appRootDir() . '/storage/logs/app.log';
             $container[LoggerInterface::class]
                 ->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
         } catch (\Exception $e) {
