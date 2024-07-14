@@ -9,6 +9,8 @@ use Versyx\Service\ServiceProviderInterface;
  * Provides application services.
  * 
  * This service provider ties together all the other service providers.
+ * You can either register providers individually, or use this provider
+ * as a shorthand method for registering all providers.
  */
 class AppServiceProvider implements ServiceProviderInterface
 {

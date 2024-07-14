@@ -9,29 +9,6 @@ Versyx is a lightweight PHP framework suitable for developing web applications. 
 - PSR-7 compliant request handling and view rendering.
 - PSR-3 compliant application logging.
 
-## Application Structure
-
-Versyx is structured as follows:
-
-```
-.
-├── docker/                 # Development docker build files
-├── src/                    # Framework source code
-│   ├── Exception/          # Error exceptions
-│   ├── Providers/          # Framework service providers
-│   ├── Service/            # Service container and provider contract
-│   ├── View/               # View template engine and contract
-│   ├── Controller.php      # Base HTTP route handler controller
-│   ├── Helpers.php         # Framework helper functions
-│   ├── Kernel.php          # Bootstraps app and handles request-response
-│   ├── Request.php         # Handles HTTP requests and server request objects
-│   ├── RequestFactory.php  # Creates server request objects from HTTP requests
-│   ├── Resolver.php        # Dependency injection and route handler resolver
-├── vendor                  # Reserved for Composer
-├── composer.json           # Composer configuration
-├── LICENSE                 # The license
-└── README.md               # This file
-```
 
 ## The Service Container
 
@@ -106,12 +83,12 @@ $app->register(new MyApp\Providers\ApiClientServiceProvider());
 After the service is registered, it is available for dependency injection. For example, to use it in an application's `HomeController`.
 
 ```php
-namespace MyApp\Controllers;
+namespace MyApp\Http\Controllers;
 
-use Versyx\Controller;
+use Versyx\Http\AbstractController;
 use MyApp\ApiClient;
 
-class HomeController extends Controller
+class HomeController extends AbstractController
 {
     // ApiClient instance is injected into route method handler
     public function index(ApiClient $client) {
@@ -146,12 +123,12 @@ Services still need to be registered to the container, however, the way they are
 Here is the same `HomeController` example, using the service locator pattern.
 
 ```php
-namespace MyApp\Controllers;
+namespace MyApp\Http\Controllers;
 
-use Versyx\Controller;
+use Versyx\Http\AbstractController;
 use MyApp\ApiClient;
 
-class HomeController extends Controller
+class HomeController extends AbstractController
 {
     public function index() {
         $exchangeRates = app(ApiClient::class)->get('currency/gbp/exchange');

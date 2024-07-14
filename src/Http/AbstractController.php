@@ -1,6 +1,6 @@
 <?php
 
-namespace Versyx;
+namespace Versyx\Http;
 
 use Psr\Log\LoggerInterface;
 use Versyx\View\ViewEngineInterface;
@@ -13,7 +13,7 @@ use Laminas\Diactoros\Response\JsonResponse;
  * Provides basic functionality for controllers, including setting data, rendering
  * views or fetching data, and returning PSR-7 compliant HTTP responses.
  */
-abstract class Controller
+abstract class AbstractController
 {
     /** @var LoggerInterface $log */
     protected $log;
@@ -25,7 +25,7 @@ abstract class Controller
     public array $data = [];
 
     /**
-     * Abstract base Controller constructor.
+     * Abstract base controller constructor.
      *
      * @param LoggerInterface $logger
      * @param ViewEngineInterface $view
