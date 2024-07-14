@@ -15,7 +15,8 @@ class DatabaseServiceProvider implements ServiceProviderInterface
         $rootDir = appRootDir();
 
         $entitiesPaths = [
-            $rootDir . '/app/Entities'
+            $rootDir . '/app/Entities',
+            $rootDir . '/vendor/versyx/framework/src/Entities'
         ];
 
         $isDevMode = env('APP_DEBUG', true);
