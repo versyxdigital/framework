@@ -32,10 +32,10 @@ class SessionServiceProvider implements ServiceProviderInterface
      * @param Container $container
      * @return Container
      */
-    public function register(Container $container): Container
+    public function register (Container $container): Container
     {
         $container[SessionManager::class] = new SessionManager(
-            $this->configureDriver(env('SESSION_DRIVER', 'file'), $container)
+            $this->configureDriver($container)
         );
 
         return $container;
@@ -47,8 +47,9 @@ class SessionServiceProvider implements ServiceProviderInterface
      * @param string $driver
      * @return SessionInterface
      */
-    private function configureDriver(string $type, Container $container): SessionInterface
+    private function configureDriver (Container $container): SessionInterface
     {
+        $type = env('SESSION_DRIVER', 'file');
         $driver = static::$mappings[$type];
 
         if ($driver === MemorySessionDriver::class) {
