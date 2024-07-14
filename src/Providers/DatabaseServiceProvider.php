@@ -14,16 +14,21 @@ class DatabaseServiceProvider implements ServiceProviderInterface
     {
         $rootDir = appRootDir();
 
-        $entitiesPath = $rootDir . '/app/Entities';
-        $isDevMode = env('APP_DEBUG');
+        $entitiesPaths = [
+            $rootDir . '/app/Entities',
+            $rootDir . '/vendor/versyx/framework/src/Entities'
+        ];
+
+        $isDevMode = env('APP_DEBUG', true);
+        
         $config = ORMSetup::createAttributeMetadataConfiguration(
-            paths: [$entitiesPath],
+            paths: [$entitiesPaths],
             isDevMode: $isDevMode
         );
 
         $sqlitePath = $rootDir . '/database/db.sqlite';
         $connection = DriverManager::getConnection([
-            'driver' => env('DB_DRIVER'),
+            'driver' => env('DB_DRIVER', 'pdo_sqlite'),
             'path' => $sqlitePath
         ], $config);
 

@@ -107,3 +107,9 @@ if (!function_exists('extractObject')) {
         return $current;
     }
 }
+
+if (!function_exists('generateSecureSessionId')) {
+    function generateSecureSessionId($length = 32) {
+        return bin2hex(random_bytes($length));
+    }
+}
