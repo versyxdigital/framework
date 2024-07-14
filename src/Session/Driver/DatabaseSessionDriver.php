@@ -2,6 +2,7 @@
 
 namespace Versyx\Session\Driver;
 
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Versyx\Entities\Session;
 use Versyx\Session\AbstractSession;
@@ -19,7 +20,16 @@ class DatabaseSessionDriver extends AbstractSession
 
     protected function load(): array
     {
-        $session = $this->entityManager->getRepository(Session::class)->find($this->sessionId);
+        $session = [];
+
+        /** @var AbstractSchemaManager $schemaManager */
+        $schemaManager = $this->entityManager
+            ->getConnection()
+            ->createSchemaManager();
+
+        if (in_array('sessions', $schemaManager->listTableNames())) {
+            $session = $this->entityManager->getRepository(Session::class)->find($this->sessionId);
+        }
 
         return $session ? unserialize($session->getData()) : [];
     }
