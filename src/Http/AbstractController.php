@@ -93,23 +93,6 @@ abstract class AbstractController
      */
     protected function render(string $template)
     {
-        $template = $this->getTemplate($template);
-
         return $this->view->render($template, $this->data);
-    }
-
-    /**
-     * Get template.
-     *
-     * @param string $template
-     * @return string
-     */
-    private function getTemplate(string $template): string
-    {
-        if(strpos($template, '.twig') === false) {
-            return $template.'.twig';
-        }
-
-        return $template;
     }
 }

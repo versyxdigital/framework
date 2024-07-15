@@ -180,12 +180,12 @@ class Resolver
         switch ($route[0]) {
             case Dispatcher::NOT_FOUND:
                 $response = new HtmlResponse(
-                    $app[ViewEngineInterface::class]->render('error/404.twig')
+                    $app[ViewEngineInterface::class]->render('error/404')
                 );
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $response = new HtmlResponse(
-                    $app[ViewEngineInterface::class]->render('error/500.twig')
+                    $app[ViewEngineInterface::class]->render('error/500')
                 );
                 break;
             case Dispatcher::FOUND:

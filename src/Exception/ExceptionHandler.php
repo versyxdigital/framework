@@ -61,7 +61,7 @@ class ExceptionHandler
 
         http_response_code(500);
 
-        echo $this->view->render('error/500.twig', [
+        echo $this->view->render('error/500', [
             'debug' => env('APP_DEBUG'),
             'error' => env('APP_DEBUG') ? $exception->getMessage() : 'An unexpected error has occurred.',
             'trace' => $trace
