@@ -24,26 +24,22 @@ class Resolver
     /**
      * Map classes in a given directory to the service container.
      * 
-     * This method takes classes under a given namespace located in a given
-     * directory, inspects their constructors and methods, creates instances
-     * with their necessary arguments and then binds them to the service
-     * container.
+     * This method takes classes located in a given directory, inspects their
+     * constructors and methods, creates instances with their necessary arguments
+     * and then binds them to the service container.
      * 
      * @param Container $app
-     * @param string $namespace
      * @param string $directory
      * @return void
      */
-    public static function map (Container $app, string $namespace, string $directory)
+    public static function map (Container $app, string $directory)
     {
         $map = ClassMapGenerator::createMap($directory);
 
         $classes = [];
         foreach ($map as $class => $path) {
-            if (strpos($class, $namespace) === 0) {       
-                if (class_exists($class)) {
-                    $classes[] = $class;
-                }
+            if (class_exists($class) && file_exists($path)) {
+                $classes[] = $class;
             }
         }
 

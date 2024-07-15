@@ -6,6 +6,7 @@ Versyx is a lightweight PHP framework suitable for developing web applications. 
 
 - A powerful dependency injection container.
 - Built-in routing with support for API and web routes.
+- Session management with support for multiple drivers.
 - PSR-7 compliant request handling and view rendering.
 - PSR-3 compliant application logging.
 

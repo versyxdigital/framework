@@ -30,6 +30,12 @@ class Kernel
      */
     public static function dispatch(Container $app): void
     {
+        // Load dependency injection for route method handlers
+        Resolver::map(
+            $app,
+            directory: appRootDir() . '/app/Http/Controllers'
+        );
+
         // Create a new request object from the request
         $request = RequestFactory::fromGlobals(
             $_SERVER,
@@ -39,7 +45,7 @@ class Kernel
             $_FILES
         );
 
-        // Handle request method including from forms
+        // Handle request method
         $method = $request->getMethod();
         $post = $request->getParsedBody();
         if ($method === 'POST' && isset($post['_method'])) {
