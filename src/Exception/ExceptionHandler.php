@@ -2,6 +2,7 @@
 
 namespace Versyx\Exception;
 
+use Throwable;
 use Psr\Log\LoggerInterface;
 use Versyx\Service\Container;
 use Versyx\View\ViewEngineInterface;
@@ -33,9 +34,10 @@ class ExceptionHandler
     /**
      * Handle exception.
      *
-     * @param $exception
+     * @param Throwable $exception
+     * @return void
      */
-    public function handle($exception)
+    public function handle(Throwable $exception): void
     {
         $this->log->error($exception->getMessage(), [
             'exception' => $exception
