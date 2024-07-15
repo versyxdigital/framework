@@ -131,7 +131,7 @@ class Resolver
                     } else {
                         // Dependency does not exist in the service container
                         throw new \RuntimeException(
-                            'Cannot resolve '.$class.' make sure it is bound in the service container'
+                            'Cannot resolve '.$class.', please make sure it is bound in the service container'
                         );
                     }
                 }
