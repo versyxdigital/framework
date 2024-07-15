@@ -62,10 +62,15 @@ abstract class AbstractController
      * Return a PSR-7 compliant HTML response
      * 
      * @param string $template
+     * @param array $data
      * @return HtmlResponse
      */
-    protected function view(string $template): HtmlResponse
+    protected function view(string $template, array $data = []): HtmlResponse
     {
+        if (! empty($data)) {
+            $this->setViewData($data);
+        }
+
         return new HtmlResponse($this->render($template));
     }
 
