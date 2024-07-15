@@ -11,11 +11,11 @@ use Versyx\View\ViewEngineInterface;
  */
 class ExceptionHandler
 {
-    /** @var mixed $log */
-    protected $log;
+    /** @var LoggerInterface $log */
+    private LoggerInterface $log;
 
     /** @var mixed $view */
-    protected $view;
+    private ViewEngineInterface $view;
 
     /**
      * ExceptionHandler constructor.
@@ -37,14 +37,32 @@ class ExceptionHandler
      */
     public function handle($exception)
     {
-        $this->log->error($exception->getMessage());
+        $this->log->error($exception->getMessage(), [
+            'exception' => $exception
+        ]);
 
-        $previous = $exception->getPrevious();
+        // Prepare the stack trace for debugging
+        $trace = '';
+        if (env('APP_DEBUG')) {
+            $previousException = $exception->getPrevious();
+            if ($previousException) {
+                $trace = ltrim($previousException->getTraceAsString());
+            } else {
+                $trace = $exception->getTraceAsString();
+            }
+        }
+
+        // Clear any existing output buffer
+        if (ob_get_length()) {
+            ob_clean();
+        }
+
+        http_response_code(500);
 
         echo $this->view->render('error/500.twig', [
             'debug' => env('APP_DEBUG'),
-            'error' => $exception->getMessage(),
-            'trace' => $previous ? ltrim($previous->getTraceAsString()) : $exception->getTraceAsString()
+            'error' => env('APP_DEBUG') ? $exception->getMessage() : 'An unexpected error has occurred.',
+            'trace' => $trace
         ]);
     }
 }
