@@ -22,6 +22,7 @@ class AppServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $container): Container
     {
+        $container->register(new ConfigServiceProvider());
         $container->register(new DatabaseServiceProvider());
         $container->register(new SessionServiceProvider());
         $container->register(new LogServiceProvider());

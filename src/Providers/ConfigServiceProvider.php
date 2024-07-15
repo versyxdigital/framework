@@ -4,20 +4,10 @@ namespace Versyx\Providers;
 
 use Versyx\Config;
 use Versyx\Service\Container;
+use Versyx\Service\ServiceProviderInterface;
 
-class ConfigServiceProvider
+class ConfigServiceProvider implements ServiceProviderInterface
 {
-    /** @var string */
-    protected string $configPath;
-
-    /**
-     * 
-     */
-    public function __construct($configPath)
-    {
-        $this->configPath = $configPath;
-    }
-
     /**
      * 
      */
@@ -25,7 +15,9 @@ class ConfigServiceProvider
     {
         $config = [];
 
-        foreach (glob($this->configPath . '/*.php') as $file) {
+        $rootDir = appRootDir();
+
+        foreach (glob($rootDir . '/config/*.php') as $file) {
             $key = basename($file, '.php');
             $config[$key] = require $file;
         }
