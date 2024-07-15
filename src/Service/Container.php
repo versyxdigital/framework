@@ -6,6 +6,7 @@ use ArrayAccess;
 use SplObjectStorage;
 use Versyx\Exception\ExpectedInvokableException;
 use Versyx\Exception\BlockedServiceException;
+use Versyx\Exception\ServiceNotBoundException;
 use Versyx\Exception\UnknownIdentifierException;
 use Versyx\Service\ServiceProviderInterface;
 
@@ -71,14 +72,14 @@ class Container implements ArrayAccess
     /**
      * Gets a parameter or an object.
      *
-     * @param string $id 
+     * @param mixed $offset 
      * @return mixed
      * @throws UnknownIdentifierException
      */
     public function offsetGet(mixed $offset): mixed
     {
         if (!isset($this->keys[$offset])) {
-            throw new UnknownIdentifierException($offset);
+            throw new ServiceNotBoundException($offset);
         }
 
         if (

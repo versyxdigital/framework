@@ -7,10 +7,13 @@ use FastRoute\Dispatcher;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Http\Message\ResponseInterface;
+use Versyx\Exception\InvalidRouteHandlerArgumentException;
+use Versyx\Exception\InvalidResponseException;
+use Versyx\Exception\ServiceNotBoundException;
+use Versyx\View\ViewEngineInterface;
+use Versyx\Service\Container;
 use Versyx\Http\Request;
 use Versyx\Http\Response;
-use Versyx\Service\Container;
-use Versyx\View\ViewEngineInterface;
 
 /**
  * Resolver for dependency injection.
@@ -130,9 +133,7 @@ class Resolver
                         $resolved[] = new Response();
                     } else {
                         // Dependency does not exist in the service container
-                        throw new \RuntimeException(
-                            'Cannot resolve '.$class.', please make sure it is bound in the service container'
-                        );
+                        throw new ServiceNotBoundException($class);
                     }
                 }
             } elseif ($param->getName() === 'request') {
@@ -146,18 +147,14 @@ class Resolver
                 $resolved[] = null;
             } else {
                 // Method param type hint is built-in and not found in route params
-                throw new \RuntimeException(
-                    'Cannot resolve parameter '. $param->getName().' for method '.$class.'::'.$method
-                );
+                throw new InvalidRouteHandlerArgumentException($param->getName(), $class, $method);
             }
         }
 
         $response = $instance->$method(...$resolved);
 
         if (! $response instanceof ResponseInterface) {
-            throw new \RuntimeException(
-                $class.'::'.$method.' must return a valid PSR-7 response'
-            );
+            throw new InvalidResponseException($class, $method);
         }
 
         return $response;
