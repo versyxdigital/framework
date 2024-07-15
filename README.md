@@ -13,7 +13,7 @@ Versyx is a lightweight PHP framework suitable for developing web applications. 
 
 ## The Service Container
 
-The service container lies at the heart of Versyx, it is responsible for managing class dependencies and making making them available for dependency injection. Dependency injection allows us to inject dependencies into classes via the constructor, or in some cases, "setter" methods.
+The service container lies at the heart of Versyx, it is responsible for managing class dependencies and making making them available for dependency injection, which ensures that route handlers are ready to act when requests are received.
 
 ## Service Providers
 
@@ -74,10 +74,7 @@ $app = new Versyx\Service\Container();
 /*----------------------------------------
  | Register service providers             |
  ----------------------------------------*/
-$app->register(new Versyx\Providers\LogServiceProvider());
-$app->register(new Versyx\Providers\RouteServiceProvider());
-$app->register(new Versyx\Providers\ViewServiceProvider());
-
+$app->register(new Versyx\Providers\AppServiceProvider());
 $app->register(new MyApp\Providers\ApiClientServiceProvider());
 ```
 
@@ -143,4 +140,50 @@ class HomeController extends AbstractController
 
 #### Which should you use?
 
-Both patterns have their place in software development, but dependency injection is generally preferred due to its advantages in decoupling, testability, and clarity. Service locator can be useful in scenarios where centralising the management of dependencies is necessary, but it should be used with caution due to its tendency to obscure dependencies and increase coupling. 
+Both patterns have their place in software development, but dependency injection is generally preferred due to its advantages in decoupling, testability, and clarity. Service locator can be useful in scenarios where centralising the management of dependencies is necessary, but it should be used with caution due to its tendency to obscure dependencies and increase coupling.
+
+## Routing
+
+Verysx uses [nikic/fastroute](#) under the hood for routing.
+
+Routes are configured in the [web project's](#) `routes/` directory. There are two sets of files:
+
+- `routes/api.php`: For API routes, these routes will start with the `/api/` prefix.
+- `routes/web.php`: For web routes, these routes are not automatically prefixed.
+
+Routes are typically structured in the following format (using a `routes/web.php` example):
+
+```php
+return [
+    '/' => [
+        ['GET', '/', [App\Http\Controllers\HomeController::class, 'index']]
+    ],
+
+    '/cms' => [
+
+        ['GET', '/', [App\Http\Controllers\CMS\HomeController::class, 'index']],
+
+        'users' => [
+            ['GET',    '/',            [App\Http\Controllers\CMS\UserController::class, 'index']],
+            ['POST',   '/create',      [App\Http\Controllers\CMS\UserController::class, 'store']],
+            ['PUT',    '/edit/{id}',   [App\Http\Controllers\CMS\UserController::class, 'update']],
+            ['DELETE', '/delete/{id}', [App\Http\Controllers\CMS\UserController::class, 'delete']],
+        ],
+
+        'pages' => [
+            ['GET',    '/',            [App\Http\Controllers\CMS\PageController::class, 'index']],
+            ['POST',   '/create',      [App\Http\Controllers\CMS\PageController::class, 'store']],
+            ['PUT',    '/edit/{id}',   [App\Http\Controllers\CMS\PageController::class, 'update']],
+            ['DELETE', '/delete/{id}', [App\Http\Controllers\CMS\PageController::class, 'delete']],
+        ],
+    ],
+];
+```
+
+Routes consists of arrays, where keys are URL path segments, which are mapped to arrays within consisting of:
+
+- The HTTP method (e.g. GET, POST, PUT, DELETE).
+- The path to attach to the URL segment, with optional parameters.
+- An array containing the route handler class name and method.
+
+Route handlers (i.e. application controllers) are mapped to the service container along with their dependencies through the application Resolver
